@@ -15,7 +15,7 @@ class ViewController: UIViewController {
     @IBOutlet var highScore: UILabel!
     
     var timer = Timer()
-    var count = 10
+    var count = 20
     var hScore = 5
     var newScore = 0
     var catchPic = 0
@@ -37,12 +37,15 @@ class ViewController: UIViewController {
         count -= 1
         timeLabel.text = "\(count)"
         
-        let newX = CGFloat.random(in: 0...(view.frame.width - imageKenny.frame.width))
-        let newY = CGFloat.random(in: 0...(view.frame.height - imageKenny.frame.height))
+        let minY = timeLabel.frame.maxY + 40
+        let maxY = highScore.frame.minY - imageKenny.frame.height - 20
+        let minX = CGFloat.random(in: 0...(view.frame.width - imageKenny.frame.width))
+        let newY = CGFloat.random(in: minY...maxY)
         
         UIView.animate(withDuration: 0.6) {
-        self.imageKenny.frame.origin = CGPoint(x: newX, y: newY)
+            self.imageKenny.frame.origin = CGPoint(x: minX, y: newY)
         }
+    
         
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(imageCatch(tapGestureRecognizer:)))
         imageKenny.isUserInteractionEnabled = true
@@ -53,8 +56,9 @@ class ViewController: UIViewController {
             timeLabel.text = "Time's over"
             let alert = UIAlertController(title: "Time's Over!", message: "Play again!", preferredStyle: .alert)
             let replayButton = UIAlertAction(title: "Replay", style: .default) { _ in
-                self.count = 10
+                self.count = 20
                 self.catchPic = 0
+                self.scoreLabel.text = "Score: \(self.catchPic)"
                 self.timer = Timer.scheduledTimer(timeInterval: 0.7, target: self, selector: #selector(self.timerFunction), userInfo: nil, repeats: true)
             }
             alert.addAction(replayButton)
